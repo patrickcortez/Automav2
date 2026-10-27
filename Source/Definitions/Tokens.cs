@@ -20,11 +20,13 @@ namespace Automav2.Source.Definitions
         Token_Identifier,
         Token_Keyword,
         Token_SemiColon, // ;
+        Token_Comma, // ,
         // Math Operations
         Token_Add,// +
         Token_Minus, //-
         Token_Divide, // /
         Token_Multiply, // *
+        Token_Equal, // =
         // logical operations
         Token_EqualTo, // ==
         Token_NotEqualTo, // !=
@@ -36,7 +38,7 @@ namespace Automav2.Source.Definitions
 
     }
 
-    record struct Tokens(TokenType Type, string Content = "")
+    record struct Tokens(TokenType Type, string Content = "",int LineNo)
     {
         public bool ToBool()
             => bool.TryParse(Content, out bool b) ? b : throw new InvalidCastException("Token Content is not a boolean");

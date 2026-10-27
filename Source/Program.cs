@@ -14,6 +14,8 @@ public static class Program{
                 // Run Shell
             }
 
+            
+
             string cmd = args[0].ToLower();
             string[] arg = args.Skip(1).ToArray();
 

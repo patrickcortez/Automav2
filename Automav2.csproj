@@ -9,4 +9,9 @@
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Source\Core\Parser\" />
+    <Folder Include="Source\Utils\" />
+  </ItemGroup>
+
 </Project>
