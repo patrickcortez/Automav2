@@ -59,7 +59,7 @@ namespace Automav2.Source.Core
         private async Task<Tokens[]> Tokenize()
         {
             List<Tokens> Toks = new();
-            bool inString = false,,hasLetter=false;
+            bool inString = false,hasLetter=false;
             string[]? Lines = await ReadLines();
             StringBuilder CurrentString = new(), 
                 CurrentIdentifier = new();
@@ -85,7 +85,7 @@ namespace Automav2.Source.Core
                     {
                         inString = !inString;
 
-                        Toks.Add(new(TokenType.Token_String, CurrentString.ToString(),CurrentLine));
+                        Toks.Add(new(TokenType.Token_String,CurrentLine, CurrentString.ToString()));
                         CurrentString.Clear();
 
                         continue;
@@ -116,14 +116,14 @@ namespace Automav2.Source.Core
 
                             if (Keywords.Contains(identifier)) // keyword 
                             {
-                                Toks.Add(new(TokenType.Token_Keyword, identifier, CurrentLine));
+                                Toks.Add(new(TokenType.Token_Keyword, CurrentLine, identifier));
                             }else if(bool.TryParse(identifier.ToLower(),out _)) // boolean
                             {
-                                Toks.Add(new(TokenType.Token_Boolean, identifier.ToLower(), CurrentLine));
+                                Toks.Add(new(TokenType.Token_Boolean, CurrentLine, identifier.ToLower()));
                             }
                             else // identifier
                             {
-                                Toks.Add(new(TokenType.Token_Identifier, identifier, CurrentLine));
+                                Toks.Add(new(TokenType.Token_Identifier, CurrentLine, identifier));
                             }
 
                             CurrentIdentifier.Clear();
@@ -131,7 +131,7 @@ namespace Automav2.Source.Core
                         }
                         else // integer
                         {
-                            Toks.Add(new(TokenType.Token_Int, identifier, CurrentLine));
+                            Toks.Add(new(TokenType.Token_Int, CurrentLine, identifier));
                             CurrentIdentifier.Clear();
                         }
 
@@ -146,77 +146,77 @@ namespace Automav2.Source.Core
                     switch (current) // special characters
                     {
                         case '{':
-                            Toks.Add(new(TokenType.Token_LBrace,"", CurrentLine));
+                            Toks.Add(new(TokenType.Token_LBrace, CurrentLine));
                             break;
                         case '}':
-                            Toks.Add(new(TokenType.Token_RBrace,"", CurrentLine));
+                            Toks.Add(new(TokenType.Token_RBrace, CurrentLine));
                             break;
                         case '(':
-                            Toks.Add(new(TokenType.Token_LParen,"", CurrentLine));
+                            Toks.Add(new(TokenType.Token_LParen, CurrentLine));
                             break;
                         case ')':
-                            Toks.Add(new(TokenType.Token_RParen,"", CurrentLine));
+                            Toks.Add(new(TokenType.Token_RParen, CurrentLine));
                             break;
                         case ';':
-                            Toks.Add(new(TokenType.Token_SemiColon, "", CurrentLine));
+                            Toks.Add(new(TokenType.Token_SemiColon, CurrentLine));
                             break;
                         case ',':
-                            Toks.Add(new(TokenType.Token_Comma, "", CurrentLine));
+                            Toks.Add(new(TokenType.Token_Comma, CurrentLine));
                             break;
                         case '+':
-                            Toks.Add(new(TokenType.Token_Add, "", CurrentLine));
+                            Toks.Add(new(TokenType.Token_Add, CurrentLine));
                             break;
                         case '-':
-                            Toks.Add(new(TokenType.Token_Minus, "", CurrentLine));
+                            Toks.Add(new(TokenType.Token_Minus, CurrentLine));
                             break;
                         case '*':
-                            Toks.Add(new(TokenType.Token_Multiply, "", CurrentLine));
+                            Toks.Add(new(TokenType.Token_Multiply, CurrentLine));
                             break;
                         case '\\':
-                            Toks.Add(new(TokenType.Token_Divide, "", CurrentLine));
+                            Toks.Add(new(TokenType.Token_Divide, CurrentLine));
                             break;
                         case '=':
 
                             if(next is '=')
                             {
                                 i += 1;
-                                Toks.Add(new(TokenType.Token_EqualTo, "", CurrentLine));
+                                Toks.Add(new(TokenType.Token_EqualTo, CurrentLine));
                                 break;
                             }
 
-                            Toks.Add(new(TokenType.Token_Equal, "", CurrentLine));
+                            Toks.Add(new(TokenType.Token_Equal, CurrentLine));
                             break;
                         case '>':
 
                             if (next is '=')
                             {
                                 i += 1;
-                                Toks.Add(new(TokenType.Token_GTE, "", CurrentLine));
+                                Toks.Add(new(TokenType.Token_GTE, CurrentLine));
                                 break;
                             }
 
-                            Toks.Add(new(TokenType.Token_GreaterThan, "", CurrentLine));
+                            Toks.Add(new(TokenType.Token_GreaterThan, CurrentLine));
                              break;
                         case '<':
 
                             if(next is '=')
                             {
                                 i += 1;
-                                Toks.Add(new(TokenType.Token_LTE, "", CurrentLine));
+                                Toks.Add(new(TokenType.Token_LTE, CurrentLine));
                                 break;
                             }
 
-                            Toks.Add(new(TokenType.Token_LessThan, "", CurrentLine));
+                            Toks.Add(new(TokenType.Token_LessThan, CurrentLine));
                             break;
                         case '!':
 
                             if(next is '=')
                             {
                                 i += 1;
-                                Toks.Add(new(TokenType.Token_NotEqualTo, "", CurrentLine));
+                                Toks.Add(new(TokenType.Token_NotEqualTo, CurrentLine));
                                 break;
                             }
-                            Toks.Add(new(TokenType.Token_Not, "", CurrentLine));
+                            Toks.Add(new(TokenType.Token_Not, CurrentLine));
                         break;
                         default:
                             throw new Exception($"Unknown Character: {current} at Instruction Line: {CurrentLine}");

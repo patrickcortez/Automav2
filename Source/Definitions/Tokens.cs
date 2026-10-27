@@ -38,7 +38,7 @@ namespace Automav2.Source.Definitions
 
     }
 
-    record struct Tokens(TokenType Type, string Content = "",int LineNo)
+    record struct Tokens(TokenType Type,int LineNo, string Content = "")
     {
         public bool ToBool()
             => bool.TryParse(Content, out bool b) ? b : throw new InvalidCastException("Token Content is not a boolean");
