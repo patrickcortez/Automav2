@@ -1,4 +1,5 @@
-﻿using static Automav2.Source.Core.IO.AutomaIO;
+﻿using Automav2.Source.Core;
+using static Automav2.Source.Core.IO.AutomaIO;
 namespace Automav2.Source;
 
 public static class Program{
@@ -6,12 +7,16 @@ public static class Program{
     public static async Task<int> Main(string[] args)
     {
 
+        Console.TreatControlCAsInput = true;
+
         try
         {
 
             if(args.Length == 0)
             {
-                // Run Shell
+                CommandHandler command1 = new("version", []);
+                await command1.Run();
+                return 0;
             }
 
             
@@ -19,7 +24,9 @@ public static class Program{
             string cmd = args[0].ToLower();
             string[] arg = args.Skip(1).ToArray();
 
-            return 0;
+            CommandHandler command = new(cmd, (args.Length > 0) ? arg : []);
+
+            return await command.Run();
 
         }catch(Exception ex)
         {

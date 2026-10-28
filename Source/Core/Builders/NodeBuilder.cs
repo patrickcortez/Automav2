@@ -4,7 +4,7 @@ using static Automav2.Source.Core.IO.AutomaIO;
 
 namespace Automav2.Source.Core.Builders
 {
-    internal class NodeBuilder
+    internal class NodeBuilder // Automa node builder
     {
         private Instruction Node{ get; set; } = null;
         private bool isDebug { get; } = false;
