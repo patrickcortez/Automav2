@@ -1,4 +1,5 @@
-﻿using Automav2.Source.Definitions;
+﻿using Automav2.Source.Core.IO;
+using Automav2.Source.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -72,9 +73,18 @@ namespace Automav2.Source.Core
                 throw new Exception("Source code cannot be empty!");
             }
 
+
+            bool isSpecial(char c)
+            {
+                return c is  '(' or ')' or '{' or '}'
+                    or '[' or ']' or ',' or ';'
+                    or '*' or '+' or '-' or '\\'
+                    or '=' or '!';
+            }
+
             foreach (string line in Lines)
             {
-                for (int i = 0; i < Lines.Length; i++)
+                for (int i = 0; i < line.Length; i++)
                 {
 
 
@@ -83,11 +93,13 @@ namespace Automav2.Source.Core
 
                     if (current is '"')
                     {
+                        if (inString)
+                        {
+                            Toks.Add(new(TokenType.Token_String, CurrentLine, CurrentString.ToString()));
+                            CurrentString.Clear();
+                        }
+
                         inString = !inString;
-
-                        Toks.Add(new(TokenType.Token_String,CurrentLine, CurrentString.ToString()));
-                        CurrentString.Clear();
-
                         continue;
                     }
 
@@ -102,19 +114,19 @@ namespace Automav2.Source.Core
                     {
                         CurrentIdentifier.Append(current);
                         hasLetter = char.IsLetter(current);
-
+                        continue;
                     }
-                    else
+                    else if((char.IsLetterOrDigit(current) || current is '_') && !isSpecial(current))
                     {
                         CurrentIdentifier.Append(current);
-                        hasLetter = char.IsLetter(current);
+                        hasLetter = !char.IsDigit(current);
 
                         string identifier = CurrentIdentifier.ToString();
 
                         if (hasLetter)
                         {
 
-                            if (Keywords.Contains(identifier)) // keyword 
+                            if (Keywords.Contains(identifier,StringComparer.OrdinalIgnoreCase)) // keyword 
                             {
                                 Toks.Add(new(TokenType.Token_Keyword, CurrentLine, identifier));
                             }else if(bool.TryParse(identifier.ToLower(),out _)) // boolean
@@ -128,20 +140,18 @@ namespace Automav2.Source.Core
 
                             CurrentIdentifier.Clear();
                             hasLetter = !hasLetter;
+                            continue;
                         }
-                        else // integer
+                        else
                         {
                             Toks.Add(new(TokenType.Token_Int, CurrentLine, identifier));
                             CurrentIdentifier.Clear();
+                            continue;
                         }
 
-                        continue;
-                    }
-
-                    if(current is '=')
-                    {
 
                     }
+
 
                     switch (current) // special characters
                     {
@@ -238,6 +248,10 @@ namespace Automav2.Source.Core
             try
             {
                 Tokens[] Toks = await Tokenize();
+
+                await AutomaIO.Write($"Token Count: {Toks.Length}");
+
+                Toks.ToList().ForEach(async item => await AutomaIO.Write(item.Type.ToString()+" , "));
 
                 return 0; // replace w/ Parser
             }catch(Exception ex)
