@@ -10,7 +10,7 @@ namespace Automav2.Source.Definitions.Varirable
     internal class Variable(string Name, IValue<object> Value)
     {
         public string Name { get; } = Name;
-        public object Value { get; set; } = Value;  
+        public IValue<object> Value { get; set; } = Value;  
     }
 
     internal abstract class IValue<T>

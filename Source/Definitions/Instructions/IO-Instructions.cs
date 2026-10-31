@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using Automav2.Source.Definitions.Assignment;
 using Automav2.Source.Definitions.Varirable;
 using static Automav2.Source.Core.IO.AutomaIO;
 
@@ -40,7 +41,7 @@ namespace Automav2.Source.Definitions.Instructions
         }
     }
 
-    internal class ReadInstruction(string Content) : Instruction
+    internal class ReadAssignment(string Content) : IAssignType
     {
 
         private string ExpandString(string Input, IEnumerable<Variable> Scope)
@@ -65,7 +66,7 @@ namespace Automav2.Source.Definitions.Instructions
 
         }
 
-        public override async Task<string>? Execute(IEnumerable<Variable> Scope)
+        public async Task<string>? Execute(IEnumerable<Variable> Scope)
         {
 
             string filtered = ExpandString(Content,Scope);
